@@ -3,7 +3,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
-
+#include <android.h>
 
 char* read_file(const char *filename) 
 {
@@ -41,7 +41,7 @@ char* read_file(const char *filename)
 }
 
 
-int get_files_count(DIR *dir, const char *dir_path)
+static int get_files_count(DIR *dir, const char *dir_path)
 {
     struct dirent *ent;
     struct stat filestat;
@@ -55,7 +55,7 @@ int get_files_count(DIR *dir, const char *dir_path)
             continue;
         }
                 
-        if (stat(ent->d_name,&filestat) == -1) 
+        if (stat(ent->d_name, &filestat) == -1) 
         {
             perror("Error while getting file information");
             continue;

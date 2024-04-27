@@ -1,17 +1,20 @@
 CC = gcc
-CFLAGS = -I./libyara/include/
+CFLAGS = -I./libyara/include/ -I./include/
 LDFLAGS = -static -L./libyara/lib
 LIBS = -lyara -lm
-TARGET = yara_module
-SRC = yara_module.c
+TARGET = doYARkA
+SRC = doyarka.c android.c connection.c yara_analyzer.c
+OBJS=$(addprefix $(BUILD_DIR)/, $(SRC:%.c=%.o))
 
 BUILD_DIR = build
 
-all: $(TARGET)
+all: $(BUILD_DIR)/$(TARGET)
 
-$(TARGET): $(SRC)
-	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $(BUILD_DIR)/$@ $(LIBS)
+$(BUILD_DIR)/$(TARGET): $(OBJS) | $(BUILD_DIR)
+	$(CC) $(LDFLAGS) $^ -o $@ $(LIBS)
+
+$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(BUILD_DIR)/$(TARGET)
