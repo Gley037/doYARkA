@@ -8,6 +8,7 @@
 #include <connection.h>
 #include <string.h>
 
+
 const int MAX_BUFFER = 2048;
 
 
@@ -51,7 +52,7 @@ void close_socket(int server_sockfd)
 
 void send_message(int server_sockfd, char* message)
 {
-    if (send(server_sockfd , message , strlen(message) , 0) < 0)
+    if (send(server_sockfd, message, strlen(message), 0) < 0)
 	{
 		perror("Send failed");
 		return;

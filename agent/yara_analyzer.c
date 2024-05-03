@@ -1,35 +1,35 @@
 #include <stdio.h>
 #include <yara.h>
 #include <android.h>
+#include <cjson/cJSON.h> 
 
 
 const char* RULE_FOLDER = "./rules/android.yar";
 
 
 typedef struct {
-    char* result_buffer;
-    size_t buffer_size;
+    char* filename;
+    cJSON* result_json;
 } UserData;
 
 
-int callback(YR_SCAN_CONTEXT* context, int message,	void *messageData, void *userData) 
+int callback(YR_SCAN_CONTEXT* context, int message,	void *message_data, void *user_data) 
 {
-    YR_RULE* rule = (YR_RULE*)messageData;
-    UserData* user_data = (UserData*)userData;
+    YR_RULE* rule = (YR_RULE*)message_data;
+    UserData* userdata = (UserData*)user_data;
     
     if (message == CALLBACK_MSG_RULE_MATCHING) 
     {
         printf("\tMatched rule: %s\n", rule->identifier);
-        snprintf(user_data->result_buffer + strlen(user_data->result_buffer), 
-                    user_data->buffer_size - strlen(user_data->result_buffer), 
-                    "\tMatched rule: %s\n", rule->identifier);
+
+        cJSON* rule_obj = cJSON_CreateObject();
+        cJSON_AddItemToObject(rule_obj, "filename", cJSON_CreateString(userdata->filename));
+        cJSON_AddItemToObject(rule_obj, "rulename", cJSON_CreateString(rule->identifier));
+        cJSON_AddItemToArray(userdata->result_json, rule_obj);
     }
     else if (message == CALLBACK_MSG_RULE_NOT_MATCHING) 
     {
         printf("\tNo matches for rule: %s\n", rule->identifier);
-        snprintf(user_data->result_buffer + strlen(user_data->result_buffer), 
-                    user_data->buffer_size - strlen(user_data->result_buffer), 
-                    "\tNo matches for rule: %s\n", rule->identifier);
     }
     else if (message == CALLBACK_MSG_SCAN_FINISHED) 
     {
@@ -43,6 +43,7 @@ int callback(YR_SCAN_CONTEXT* context, int message,	void *messageData, void *use
 char* process_scan(char* analyse_folder) 
 {
     UserData user_data;
+    char *json_result;
 
     yr_initialize();
 
@@ -67,21 +68,18 @@ char* process_scan(char* analyse_folder)
 
         if (files != NULL) 
         {
-            user_data.buffer_size = num_files * 128;
-            user_data.result_buffer = (char*)malloc(user_data.buffer_size * sizeof(char));
-            user_data.result_buffer[0] = '\0';
+            user_data.result_json = cJSON_CreateArray();
 
             for (int i = 0; i < num_files; i++)
             {
                 printf("Scanning file %s:\n", files[i]);
-                snprintf(user_data.result_buffer + strlen(user_data.result_buffer), 
-                    user_data.buffer_size - strlen(user_data.result_buffer), 
-                    "Scanning file %s:\n", files[i]);
-
                 yr_rules_scan_file(rules, files[i], 0, callback, &user_data, 0);
             }
-        }
 
+            json_result = cJSON_Print(user_data.result_json);
+        }       
+        
+        cJSON_Delete(user_data.result_json);
         yr_scanner_destroy(scanner);
         yr_rules_destroy(rules);
         free(files);
@@ -90,5 +88,5 @@ char* process_scan(char* analyse_folder)
     yr_compiler_destroy(compiler);
     yr_finalize();
 
-    return user_data.result_buffer;
+    return json_result;
 }

@@ -3,7 +3,7 @@ CFLAGS = -I./libyara/include/ -I./include/
 LDFLAGS = -static -L./libyara/lib
 LIBS = -lyara -lm
 TARGET = doYARkA
-SRC = doyarka.c android.c connection.c yara_analyzer.c
+SRC = doyarka.c android.c connection.c yara_analyzer.c cJSON.c
 OBJS=$(addprefix $(BUILD_DIR)/, $(SRC:%.c=%.o))
 
 BUILD_DIR = build
