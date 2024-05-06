@@ -1,3 +1,13 @@
+rule Test
+{
+	meta:
+		description = "Test file detected"
+	strings:
+		$ = "test"
+	condition:
+		all of them
+}
+
 rule Android_APK
 {
 	meta:

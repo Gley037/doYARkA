@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <limits.h>
 #include <sys/stat.h>
 #include <android.h>
 
-char* read_file(const char *filename) 
+
+char* read_rules_file(const char *filename) 
 {
     FILE *file = fopen(filename, "r");
     if (file == NULL) 
     {
-        perror("Error open reading file");
+        perror("Error while opening rules file");
         return NULL;
     }
 
@@ -54,8 +56,11 @@ static int get_files_count(DIR *dir, const char *dir_path)
         {
             continue;
         }
-                
-        if (stat(ent->d_name, &filestat) == -1) 
+        
+        char full_path[1024];
+        snprintf(full_path, sizeof(full_path), "%s/%s", dir_path, ent->d_name);
+
+        if (stat(full_path, &filestat) == -1)
         {
             perror("Error while getting file information");
             continue;
@@ -105,7 +110,11 @@ char** read_directory(const char *dir_path, int *num_files)
         char full_path[1024];
         snprintf(full_path, sizeof(full_path), "%s/%s", dir_path, ent->d_name);
         
-        stat(ent->d_name, &filestat);
+        if (stat(full_path, &filestat) == -1)
+        {
+            perror("Error while getting file information");
+            continue;
+        }
 
         if (!S_ISDIR(filestat.st_mode)) 
         {

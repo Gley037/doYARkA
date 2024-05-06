@@ -4,10 +4,8 @@
 #include <cjson/cJSON.h> 
 
 
-const char* RULE_FOLDER = "./rules/android.yar";
-
-
-typedef struct {
+typedef struct 
+{
     char* filename;
     cJSON* result_json;
 } UserData;
@@ -40,17 +38,17 @@ int callback(YR_SCAN_CONTEXT* context, int message,	void *message_data, void *us
 }
 
 
-char* process_scan(char* analyse_folder) 
+char* process_scan(char* rule_folder, char* analyse_folder) 
 {
     UserData user_data;
-    char *json_result;
+    char *json_result = NULL;
 
     yr_initialize();
 
     YR_COMPILER* compiler;
     yr_compiler_create(&compiler);
 
-    const char* rules_string = read_file(RULE_FOLDER);
+    const char* rules_string = read_rules_file(rule_folder);
     if (rules_string != NULL) 
     {
         yr_compiler_add_string(compiler, rules_string, NULL);
@@ -73,18 +71,19 @@ char* process_scan(char* analyse_folder)
             for (int i = 0; i < num_files; i++)
             {
                 printf("Scanning file %s:\n", files[i]);
+                user_data.filename = files[i];
                 yr_rules_scan_file(rules, files[i], 0, callback, &user_data, 0);
             }
 
             json_result = cJSON_Print(user_data.result_json);
-        }       
+        }
         
         cJSON_Delete(user_data.result_json);
         yr_scanner_destroy(scanner);
         yr_rules_destroy(rules);
         free(files);
     }
-   
+    
     yr_compiler_destroy(compiler);
     yr_finalize();
 
