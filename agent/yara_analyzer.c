@@ -23,6 +23,16 @@ int callback(YR_SCAN_CONTEXT* context, int message,	void *message_data, void *us
         cJSON* rule_obj = cJSON_CreateObject();
         cJSON_AddItemToObject(rule_obj, "filename", cJSON_CreateString(userdata->filename));
         cJSON_AddItemToObject(rule_obj, "rulename", cJSON_CreateString(rule->identifier));
+
+        YR_META* meta;
+        yr_rule_metas_foreach(rule, meta) 
+        {
+            if (meta->type == META_TYPE_STRING) 
+            {
+                cJSON_AddItemToObject(rule_obj, meta->identifier, cJSON_CreateString(meta->string));
+            }
+        }
+
         cJSON_AddItemToArray(userdata->result_json, rule_obj);
     }
     else if (message == CALLBACK_MSG_RULE_NOT_MATCHING) 

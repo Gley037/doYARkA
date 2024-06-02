@@ -2,6 +2,9 @@ rule Test
 {
 	meta:
 		description = "Test file detected"
+		src = "https://en.wikipedia.org/wiki/Software_testing"
+		hash = "1234567890"
+		mitre = "TA0041"
 	strings:
 		$ = "test"
 	condition:
@@ -12,6 +15,9 @@ rule Android_APK
 {
 	meta:
 		description = "APK file detected"
+		src = "https://en.wikipedia.org/wiki/Apk_(file_format)"
+		hash = ""
+		mitre = "TA0041"
 	strings:
 		$ = "assets"
 		$ = "META-INF"
