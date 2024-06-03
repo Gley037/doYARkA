@@ -1,6 +1,7 @@
 rule Test
 {
 	meta:
+		level = "1"
 		description = "Test file detected"
 		src = "https://en.wikipedia.org/wiki/Software_testing"
 		hash = "1234567890"
@@ -14,6 +15,7 @@ rule Test
 rule Android_APK
 {
 	meta:
+		level = "3"
 		description = "APK file detected"
 		src = "https://en.wikipedia.org/wiki/Apk_(file_format)"
 		hash = ""

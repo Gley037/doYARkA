@@ -27,6 +27,7 @@ int initialize_socket(char* server_address, int port)
     }
 
     printf("Socket Create Success\n");
+    printf("Establishing connection...\n");
 
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = inet_addr(server_address);

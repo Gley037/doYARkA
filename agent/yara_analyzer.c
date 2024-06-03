@@ -2,12 +2,12 @@
 #include <yara.h>
 #include <android.h>
 #include <cjson/cJSON.h> 
-
+#include <connection.h>
 
 typedef struct 
 {
+    int server_sockfd;
     char* filename;
-    cJSON* result_json;
 } UserData;
 
 
@@ -33,7 +33,13 @@ int callback(YR_SCAN_CONTEXT* context, int message,	void *message_data, void *us
             }
         }
 
-        cJSON_AddItemToArray(userdata->result_json, rule_obj);
+        char *json_str = cJSON_Print(rule_obj);
+        if (json_str != NULL)
+        {
+            send_message(userdata->server_sockfd, json_str);
+        }
+        
+        cJSON_Delete(rule_obj);
     }
     else if (message == CALLBACK_MSG_RULE_NOT_MATCHING) 
     {
@@ -48,10 +54,10 @@ int callback(YR_SCAN_CONTEXT* context, int message,	void *message_data, void *us
 }
 
 
-char* process_scan(char* rule_folder, char* analyse_folder) 
+void process_scan(char* rule_folder, char* analyse_folder, int server_sockfd) 
 {
-    UserData user_data;
-    char *json_result = NULL;
+    UserData user_data;    
+    user_data.server_sockfd = server_sockfd;
 
     yr_initialize();
 
@@ -76,19 +82,14 @@ char* process_scan(char* rule_folder, char* analyse_folder)
 
         if (files != NULL) 
         {
-            user_data.result_json = cJSON_CreateArray();
-
             for (int i = 0; i < num_files; i++)
             {
                 printf("Scanning file %s:\n", files[i]);
                 user_data.filename = files[i];
                 yr_rules_scan_file(rules, files[i], 0, callback, &user_data, 0);
             }
-
-            json_result = cJSON_Print(user_data.result_json);
         }
         
-        cJSON_Delete(user_data.result_json);
         yr_scanner_destroy(scanner);
         yr_rules_destroy(rules);
         free(files);
@@ -96,6 +97,4 @@ char* process_scan(char* rule_folder, char* analyse_folder)
     
     yr_compiler_destroy(compiler);
     yr_finalize();
-
-    return json_result;
 }

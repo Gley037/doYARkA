@@ -71,11 +71,7 @@ int main(int argc, char *args[])
         return 1;
     }
 
-    char* scan_result = process_scan(arguments.rule_file, arguments.scan_path);
-    if (scan_result != NULL)
-    {
-        send_message(server_sockfd, scan_result);
-    }
+    process_scan(arguments.rule_file, arguments.scan_path, server_sockfd);
     
     close_socket(server_sockfd);
     return 0;
