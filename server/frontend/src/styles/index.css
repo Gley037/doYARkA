@@ -1,0 +1,31 @@
+body, html {
+  margin: 0; 
+  font-family: 'TinkoffSans' !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+@font-face {
+	font-family: 'TinkoffSans';
+	src: url('../fonts/tinkoffsans-regular.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/tinkoffsans-regular.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/tinkoffsans-regular.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/tinkoffsans-regular.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/tinkoffsans-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/tinkoffsans-regular.svg#tinkoffsans-regular') format('svg'); /* Chrome < 4, Legacy iOS */
+    font-weight: normal;
+}
+
+@font-face {
+	font-family: 'TinkoffSans';
+	src: url('../fonts/tinkoffsans-bold.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/tinkoffsans-bold.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/tinkoffsans-bold.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/tinkoffsans-bold.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/tinkoffsans-bold.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/tinkoffsans-bold.svg#tinkoffsans-bold') format('svg'); /* Chrome < 4, Legacy iOS */
+    font-weight: bold;
+}

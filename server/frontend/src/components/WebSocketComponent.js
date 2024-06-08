@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import config from './config';
-import './App.css';
+import config from '../config';
+import FileList from './FileList';
+import '../styles/App.css';
 
-const WebSocketComponent = () => {
+const WebSocketComponent = ({ onFileItemClick }) => {
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
@@ -19,13 +20,8 @@ const WebSocketComponent = () => {
     }, []);
 
     return (
-        <div className="file-list">
-            {files.map((file, index) => (
-                <div key={index} className="file-item">
-                    <p>Filename: {file.filename}</p>
-                    <p>Rule: {file.rulename}</p>
-                </div>
-            ))}
+        <div className="websocket-container">
+            <FileList files={files} onFileItemClick={onFileItemClick} />
         </div>
     );
 };

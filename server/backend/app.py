@@ -1,16 +1,14 @@
-import json
 import logging
 import asyncio
 
+from functools import partial
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
-from server.backend.scan.server import SocketHandler
+from scan.server import SocketHandler
 
 
 log = logging.getLogger(__name__)
-
-from functools import partial
 
 
 @asynccontextmanager
