@@ -10,8 +10,8 @@ const WebSocketComponent = ({ onFileItemClick }) => {
         const socket = new WebSocket(config.WebsocketUrl);
 
         socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            setFiles(data);
+            const newData = JSON.parse(event.data);
+            setFiles(prevFiles => [...prevFiles, newData]);
         };
 
         return () => {

@@ -13,7 +13,7 @@ const FileInfoPanel = ({ file }) => {
                     <div className="file-info-header">
                         <b>{file.filename}</b>
                         <p>Agent name: {hostname}</p>
-                        <p>Agent address: {file.client_ip}</p>
+                        <p>Agent address: {file.agent_ip}</p>
                         <p>Detection time: {file.time}</p>
                     </div>
                     <p>Rule: {file.rulename}</p>
